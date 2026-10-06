@@ -1,12 +1,12 @@
-# pi → Claude Code skin
+# pi-claude-code-skin
 
-A Pi package that restyles the interactive agent to look like the reference screenshot
-(`claudecode.png`): pixel-invader header, `|` banner lines, right-aligned hint above the
-input, a `❯` prompt between full-width rules, a `▸▸ mode (shift+tab to cycle)` footer, and a
+A [pi](https://github.com/earendil-works/pi) package that restyles the interactive agent to look
+like Claude Code: pixel-invader header, `|` banner lines, right-aligned hint above the input,
+a `❯` prompt between full-width rules, a `▸▸ mode (shift+tab to cycle)` footer, and a
 clay/charcoal palette with a gray user-message bar.
 
 ```text
-██          ██
+████          ██
   ██████████████████    Claude Code  v1.0.3
 ██████████████████████  Qwen: Qwen3.8 27B · Claude Pro
 ██████████████████████  ~/Documents/Projects/pi-extension
@@ -26,79 +26,17 @@ clay/charcoal palette with a gray user-message bar.
 ▸▸ medium mode (shift+tab to cycle) · my-model · 12% ctx                                    ↑2.2k ↓22 · $0.001
 ```
 
-## Layout
-
-```
-extensions/claude-code.ts   the skin (header, footer, hint widget, editor prompt, spinner, theme)
-themes/claude-code.json     the palette (all colors live here)
-package.json                pi package manifest + dev scripts
-```
-
-## Install (from git)
+## Install
 
 ```bash
 pi install git:github.com/Krystex/pi-claude-code-skin
-# equivalent: pi install https://github.com/Krystex/pi-claude-code-skin
+# pin a ref: pi install git:github.com/Krystex/pi-claude-code-skin@v0.1.0
+# remove:    pi remove git:github.com/Krystex/pi-claude-code-skin
 ```
 
-Pin a ref (branch, tag, or commit) with `@`, e.g.
-`pi install git:github.com/Krystex/pi-claude-code-skin@v0.1.0`.
-
-Remove it later with:
-
-```bash
-pi remove git:github.com/Krystex/pi-claude-code-skin
-```
-
-## Run it (from a local checkout)
-
-**One-off (no install):**
-
-```bash
-npm run dev            # pi --theme ./themes/claude-code.json -e ./extensions/claude-code.ts
-```
-
-**Everywhere (from this folder):**
-
-```bash
-pi install .           # or: npm run install-local
-```
-
-The skin activates the `claude-code` palette itself on every session start, as an in-memory
-theme instance, so your `/settings` → Theme choice is never rewritten. Want it permanent?
-Select `claude-code` in `/settings` (or set `"theme": "claude-code"`).
-
-**Without copying anything,** point your user settings at this folder
-(`~/.pi/agent/settings.json`):
-
-```json
-{
-  "extensions": ["~/Documents/Projects/pi-extension/extensions/claude-code.ts"],
-  "themes": ["~/Documents/Projects/pi-extension/themes/claude-code.json"],
-  "theme": "claude-code"
-}
-```
-
-**Project only:** put the two resource dirs under `.pi/` (`.pi/extensions/`, `.pi/themes/`)
-or install with `pi install . --local`; project resources load after trust is granted.
-
-### "I don't see claude-code in /settings"
-
-The picker only lists themes pi actually loaded. A theme sitting in this folder is
-invisible unless one of the options above (or a git install) is in place:
-
-| Situation | Theme in the picker? |
-| --- | --- |
-| `pi` started normally, nothing installed | no |
-| `pi --theme ./themes/claude-code.json ...` | yes, for that run |
-| `pi install git:github.com/Krystex/pi-claude-code-skin` | yes, everywhere |
-| `pi install .` from a local checkout | yes, everywhere |
-| `extensions`/`themes` paths in `~/.pi/agent/settings.json` | yes, everywhere |
-| copied to `~/.pi/agent/themes/` or `.pi/themes/` | yes |
-
-Also note that `/settings` shows the *saved* theme (yours is `system`) even while the skin
-paints `claude-code` colors, because the skin applies the palette in memory and never writes
-that setting. Pick `claude-code` in the list if you want it even when the skin is off.
+The skin activates the `claude-code` palette itself at session start (in memory), so your
+`/settings` → Theme choice is never rewritten. Select `claude-code` in `/settings` to make it
+permanent even when the skin is off.
 
 ## Controls
 
@@ -108,63 +46,28 @@ that setting. Pick `claude-code` in the list if you want it even when the skin i
 | `/claude-code off` | restore pi's built-in header, footer, editor, and indicators |
 | `/claude-code status` | report the current state |
 
-`enabledByDefault: false` in `CONFIG` starts pi with the normal look instead.
-
-## What maps to what
-
-| Screenshot element | Mechanism |
-| --- | --- |
-| invader logo, `Claude Code  v…`, `model · plan`, `~/cwd` | `ctx.ui.setHeader()` custom component |
-| `| Your voice can help guide AI` | `CONFIG.banner`, rendered by the same header component |
-| `Image in clipboard · ctrl+v to paste` | `ctx.ui.setWidget(key, factory, { placement: "aboveEditor" })` |
-| `❯ █` between rules | `ctx.ui.setEditorComponent()` + a `CustomEditor` subclass that re-renders the borders at full width and prefixes the first content line |
-| `› hi there!` on the gray bar | `pi.registerMarkdownTransformer()` — display-only, the model and session file keep your original text |
-| `▸▸ auto mode on (shift+tab to cycle)` | `ctx.ui.setFooter()` + `pi.getThinkingLevel()` (shift+tab is pi's `app.thinking.cycle`) |
-| `Churned for 1s · done 22:19` | `ctx.ui.setWorkingMessage("Churning")` + `setWorkingIndicator({ frames })` |
-| gray user-message bar, clay accents, dim grays | `themes/claude-code.json` (`userMessageBg`, `accent`, `dim`, `md*`, `syntax*`) |
-
 ## Customizing
 
-* **Words/identity** — `CONFIG` at the top of `extensions/claude-code.ts`: `appName`,
+* **Words/identity** — `CONFIG` at the top of `extensions/claude-code.ts` (`appName`,
   `version`, `planLabel`, `banner`, `hint`, `prompt`, `workingMessage`, `spinnerFrames`,
-  `messagePrefix`.
-* **Transcript prefixes** — `CONFIG.messagePrefix` maps each message kind (`user`,
-  `assistant`, `assistant-thinking`) to a glyph. `user: "›"` is on; set `assistant: "●"` for
-  the screenshot's bullet. Messages whose first line is a block construct (code fence, list,
-  heading, quote, table, indented code) are left untouched so their markdown stays valid.
+  `messagePrefix`).
 * **Colors** — only `themes/claude-code.json`. Everything is a `vars` entry (`clay`,
   `panelHi`, `grayDim`, …), so changing `"clay": "#d97757"` re-skins logo, prompt accents,
-  bullets, and borders at once. Hex, `oklch()`, `okhsl()`, 256-color indices, and `""`
-  (terminal default) are all accepted.
-* **Layout details** — the header/footer/hint components use pi's theme tokens
-  (`accent`, `muted`, `dim`, `warning`, `border`) rather than literal colors, so they follow
-  whatever palette is active and rebuild correctly on `/reload` and theme switches.
+  bullets, and borders at once. Hex, `oklch()`, `okhsl()`, 256-color indices, and `""` are
+  all accepted.
 
 ## Development
 
 ```bash
-npm run check          # tsc --noEmit against the host-provided pi types
+git clone https://github.com/Krystex/pi-claude-code-skin
+cd pi-claude-code-skin
+npm install
+pi install .          # local package source: files load in place, no copy
+npm run check         # tsc --noEmit
 ```
 
-`pi install .` registers this folder as a *local* package source — pi loads the files in
-place, it does not copy them. Edit `extensions/claude-code.ts` or
-`themes/claude-code.json`, then `/reload` (or restart pi) to pick the change up.
+Edit `extensions/claude-code.ts` or `themes/claude-code.json`, then `/reload` (or restart pi)
+to pick the change up. Remove with `pi remove <path-to-this-folder>`.
 
-Stop loading a local install with `pi remove <path-to-this-folder>` (or use
-`pi remove git:github.com/Krystex/pi-claude-code-skin` for a git install).
-
-Reload the skin inside a running session with `/reload` (or `/claude-code off` then `on`).
-The logo header is printed once at startup, so `/reload` is what redraws it after a toggle.
-`@earendil-works/pi-coding-agent`, `@earendil-works/pi-tui`, and `typescript` are
-dev-only: pi supplies the host packages to extensions at runtime, and they are declared as
-`peerDependencies` so nothing gets bundled.
-
-## Known differences from the screenshot
-
-* The logo header is printed once at startup, so `/claude-code on` mid-session restores
-  everything except the header — run `/reload` (or start a session) to redraw it.
-* pi pads the user-message bar by one column, so `›` sits at column 2 rather than column 1.
-* The footer reports pi's real state (thinking level, branch, model, context %, tokens,
-  cost) rather than agent counts, and `shift+tab` genuinely cycles thinking levels.
-* The header shows pi's version and your current model/provider, not a fixed product name —
-  edit `CONFIG` if you want the literal strings from the screenshot.
+`@earendil-works/pi-coding-agent` and `@earendil-works/pi-tui` are dev-only (`peerDependencies`
+with `"*"`): pi supplies the host packages to extensions at runtime, so nothing is bundled.
