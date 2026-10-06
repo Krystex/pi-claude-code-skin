@@ -34,7 +34,23 @@ themes/claude-code.json     the palette (all colors live here)
 package.json                pi package manifest + dev scripts
 ```
 
-## Run it
+## Install (from git)
+
+```bash
+pi install git:github.com/Krystex/pi-claude-code-skin
+# equivalent: pi install https://github.com/Krystex/pi-claude-code-skin
+```
+
+Pin a ref (branch, tag, or commit) with `@`, e.g.
+`pi install git:github.com/Krystex/pi-claude-code-skin@v0.1.0`.
+
+Remove it later with:
+
+```bash
+pi remove git:github.com/Krystex/pi-claude-code-skin
+```
+
+## Run it (from a local checkout)
 
 **One-off (no install):**
 
@@ -42,7 +58,7 @@ package.json                pi package manifest + dev scripts
 npm run dev            # pi --theme ./themes/claude-code.json -e ./extensions/claude-code.ts
 ```
 
-**Everywhere (recommended):**
+**Everywhere (from this folder):**
 
 ```bash
 pi install .           # or: npm run install-local
@@ -68,14 +84,15 @@ or install with `pi install . --local`; project resources load after trust is gr
 
 ### "I don't see claude-code in /settings"
 
-The picker only lists themes pi actually loaded. A theme sitting in this folder is invisible
-unless one of the options above is in place:
+The picker only lists themes pi actually loaded. A theme sitting in this folder is
+invisible unless one of the options above (or a git install) is in place:
 
 | Situation | Theme in the picker? |
 | --- | --- |
 | `pi` started normally, nothing installed | no |
 | `pi --theme ./themes/claude-code.json ...` | yes, for that run |
-| `pi install .` from this folder (what's configured now) | yes, everywhere |
+| `pi install git:github.com/Krystex/pi-claude-code-skin` | yes, everywhere |
+| `pi install .` from a local checkout | yes, everywhere |
 | `extensions`/`themes` paths in `~/.pi/agent/settings.json` | yes, everywhere |
 | copied to `~/.pi/agent/themes/` or `.pi/themes/` | yes |
 
@@ -133,7 +150,8 @@ npm run check          # tsc --noEmit against the host-provided pi types
 place, it does not copy them. Edit `extensions/claude-code.ts` or
 `themes/claude-code.json`, then `/reload` (or restart pi) to pick the change up.
 
-Stop loading it with `pi remove ~/Documents/Projects/pi-extension`.
+Stop loading a local install with `pi remove <path-to-this-folder>` (or use
+`pi remove git:github.com/Krystex/pi-claude-code-skin` for a git install).
 
 Reload the skin inside a running session with `/reload` (or `/claude-code off` then `on`).
 The logo header is printed once at startup, so `/reload` is what redraws it after a toggle.
