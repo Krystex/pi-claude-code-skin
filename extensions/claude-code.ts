@@ -68,8 +68,14 @@ const CONFIG = {
 	} as Record<MarkdownTransformContext["messageType"], string>,
 	/** Streaming wording, in the spirit of "Churned for 1s". */
 	workingMessage: "Churning",
-	spinnerFrames: ["·", "✢", "", "✻", "", "✢"],
-	spinnerIntervalMs: 140,
+	/**
+	 * Pulse frames. Every frame must render exactly one cell wide: Loader builds the
+	 * status line as `frame + " "`, so a zero-width frame (e.g. "") shifts "Churning"
+	 * one column left and the whole line jitters on every tick. A single-space frame
+	 * is fine too when you want the icon to blink away.
+	 */
+	spinnerFrames: ["·", "✢", "✦", "❇", "✦", "✢"],
+	spinnerIntervalMs: 200,
 	/** Label for collapsed thinking blocks. */
 	thinkingLabel: "Thinking",
 	/** Apply the skin as soon as a session starts. */
