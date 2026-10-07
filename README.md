@@ -5,26 +5,9 @@ like Claude Code: pixel-invader header, `|` banner lines, right-aligned hint abo
 a `❯` prompt between full-width rules, a `▸▸ mode (shift+tab to cycle)` footer, and a
 clay/charcoal palette with a gray user-message bar.
 
-```text
-████          ██
-  ██████████████████    Claude Code  v1.0.3
-██████████████████████  Qwen: Qwen3.8 27B · Claude Pro
-██████████████████████  ~/Documents/Projects/pi-extension
-████    ██████    ████
-██████████████████████
-  ██████████████████
-    ██          ██
-  ████          ████
-
-| Claude Code skin for pi
-| /claude-code off restores pi's own header, footer, and editor
-
-                                        shift+tab cycles thinking · ctrl+p cycles models · ctrl+c clears
-────────────────────────────────────────────────────────────────────────────────────────────────────────
-❯
-────────────────────────────────────────────────────────────────────────────────────────────────────────
-▸▸ medium mode (shift+tab to cycle) · my-model · 12% ctx                                    ↑2.2k ↓22 · $0.001
-```
+<p align="center">
+  <img src=".docs/screenshot.png" alt="Screenshot of the Claude Code skin in pi" />
+</p>
 
 ## Install
 
